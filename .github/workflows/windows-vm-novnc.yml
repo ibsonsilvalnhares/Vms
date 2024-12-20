@@ -1,0 +1,28 @@
+name: Windows 10 VM with noVNC
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Set up Chocolatey
+      run: |
+        Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+    - name: Install noVNC and dependencies
+      run: |
+        choco install -y novnc
+        choco install -y tigervnc
+
+    - name: Start VNC server
+      run: |
+        Start-Process "C:\Program Files\TigerVNC\vncserver.exe" -ArgumentList ":1" -NoNewWindow
+
+    - name: Start noVNC server
+      run: |
+        Start-Process "cmd.exe" -ArgumentList "/c, C:\Program Files\noVNC\utils\launch.sh --vnc localhost:5901" -NoNewWindow
