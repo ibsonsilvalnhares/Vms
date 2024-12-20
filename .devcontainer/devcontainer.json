@@ -1,12 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "features": {
-    "ghcr.io/devcontainers/features/desktop-lite:1": {}
-  },
-  "forwardPorts": [6080],
-  "portsAttributes": {
-    "6080": {
-      "label": "desktop"
-    }
-  }
+  "name": "Ubuntu with noVNC",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils novnc websockify tigervnc-standalone-server tigervnc-common && vncserver :1 && websockify --web=/usr/share/novnc/ 5901 localhost:5901 &"
 }
