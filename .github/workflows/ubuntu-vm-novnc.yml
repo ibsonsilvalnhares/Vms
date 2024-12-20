@@ -1,0 +1,28 @@
+name: Ubuntu VM with noVNC
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xfce4 xfce4-goodies xorg dbus-x11 x11-xserver-utils
+        sudo apt-get install -y novnc websockify
+        sudo apt-get install -y tigervnc-standalone-server tigervnc-common
+
+    - name: Set up VNC server
+      run: |
+        vncserver :1
+        export DISPLAY=:1
+
+    - name: Start noVNC server
+      run: |
+        websockify --web=/usr/share/novnc/ 5901 localhost:5901 &
+        noVNC --vnc localhost:5901
